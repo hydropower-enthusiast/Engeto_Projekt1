@@ -33,71 +33,38 @@ TEXTS = [
     garpike and stingray are also present.'''
 ]
 
-# USERLIST=["bob","ann","mike","liz"]
-# USERPASSWORDS=["123","pass123","password123","pass123"]
+USERLIST=["bob","ann","mike","liz"]
+USERPASSWORDS=["123","pass123","password123","pass123"]
 
-# from sys import exit
+from sys import exit
 
-# username=input("username: ")
-# password=input("password: ")
+username=input("username: ")
+password=input("password: ")
 
-# if username in USERLIST:
-#     userlist_id=USERLIST.index(username)
+if username in USERLIST:
+    userlist_id=USERLIST.index(username)
     
-#     if password==USERPASSWORDS[userlist_id]:
-#         print("Welcome to the app, ",username)
-#         print("We have ",len(TEXTS)," texts to be analyzed.")
-#         print("Enter a number between 1 and ", len(TEXTS), "to select:" )
-#         selected_text=input("")
-#         if selected_text=="1" or selected_text=="2" or selected_text=="3":
-#             selected_text=int(selected_text)-1
-#             print(len(TEXTS[selected_text].split()))
-#         else:
-#             print("Wrong Input, terminating the program..")
-#             exit()
+    if password==USERPASSWORDS[userlist_id]:
+        print("Welcome to the app, ",username)
+        print("We have ",len(TEXTS)," texts to be analyzed.")
+        print("Enter a number between 1 and ", len(TEXTS), "to select:" )
+        selected_text=input("")
+        if selected_text=="1" or selected_text=="2" or selected_text=="3":
+            selected_text=int(selected_text)-1
+        else:
+            print("Wrong Input, terminating the program..")
+            exit()
             
-#     else:
-#         print("unregistered user, terminating the program..")
-#         exit()
-
-# else:
-#     print("unregistered user, terminating the program..")
-#     exit()
-
-
-
-empty_list=[0]
-tenhle_text=TEXTS[0]
-
-# Cyklus hleda mezery v zadanem textu a zapisuje jejich pozici do empty listu
-for a in range(0,len(tenhle_text)):
-    if tenhle_text[a]==" ":
-        empty_list.extend([a])
     else:
-        pass
+        print("unregistered user, terminating the program..")
+        exit()
 
-empty_list.extend([len(tenhle_text)]) # pridava do listu koncovou hodnotu
+else:
+    print("unregistered user, terminating the program..")
+    exit()
 
 
-
-
-# Cyklus vyhledava slova podle umisteni mezer z empty listu a zapisuje
-# je do second empty listu. Neresi vice mezer za sebou, reseno pozdeji.
-second_empty_list=[]
-for b in range(0,len(empty_list)-1):
-    if b==0:
-        second_empty_list.extend([tenhle_text[empty_list[b]:empty_list[b+1]]])
-    else:
-        second_empty_list.extend([tenhle_text[empty_list[b]+1:empty_list[b+1]]])
-    
-
-helper_list = second_empty_list[:]  # vytvori kopii second empty listu, aby bylo mozno
-                                    # vyjmout nadbytecne mezery z second_empty_listu
-                                    # jinak by dochazelo k iteraci pres stale se zmensujici
-                                    # list coz vede k problemum s iteraci a neocekav. chovani.
-for x in helper_list:
-    if x=="":
-        second_empty_list.remove(x)
+second_empty_list=TEXTS[selected_text].split()
 
 # Odstraneni carky, tecky a noveho paragrafu z textu
 helper_list2=second_empty_list[:]
@@ -126,20 +93,14 @@ for c in range(0,len(second_empty_list)):
     # Hledani velkych prvnich pismen
     if second_empty_list[c][0].istitle():
         counter_capital_firstletters=counter_capital_firstletters+1
-    else:
-        pass
     
     # Hledani slov se samymi velkymi pismeny
     if second_empty_list[c].isupper():
         counter_capital_allletters=counter_capital_allletters+1
-    else:
-        pass
     
     # Hledani slov se samymi malymi pismeny
     if second_empty_list[c].islower():
         counter_small_allletters=counter_small_allletters+1
-    else:
-        pass
 
     # Hledani moznych cisel a jejich nasledny soucet
     try:
@@ -150,12 +111,12 @@ for c in range(0,len(second_empty_list)):
         pass
 
 
-print(len(second_empty_list))        
-print(counter_capital_firstletters)
-print(counter_capital_allletters)
-print(counter_small_allletters)
-print(counter_amount_of_numbers)
-print(counter_sum_of_numbers)
+print("There is/are ",len(second_empty_list)," word(s) in the selected text.")        
+print("There is/are ",counter_capital_firstletters," titlecase word(s).")
+print("There is/are ",counter_capital_allletters," uppercase word(s).")
+print("There is/are ",counter_small_allletters," lowercase word(s).")
+print("There is/are ",counter_amount_of_numbers," numeric string(s).")
+print("The sum of all the numbers is ",counter_sum_of_numbers)
 
 
 # Vypocet cetnosti ruznych delek slov v textu
@@ -174,8 +135,6 @@ print("LEN | Occurences | Nr.")
 print("------------------------------------------------------------")
 
 for k in range(0,max_length_of_string):
-    # print(k+1,"*"*vysledne_delky[k],vysledne_delky[k])
-    
     print(f"{k+1:>4}|{'*'*vysledne_delky[k]:>0}|{vysledne_delky[k]:>1}") 
     #striska/zobak znamena zarovnani, cislo znaci pocet odsazovacich znaku
 
