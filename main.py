@@ -47,7 +47,7 @@ if username in USERLIST:
     userlist_id = USERLIST.index(username)
     if password == USERPASSWORDS[userlist_id]:
         print("----------------------------------------")
-        print("Welcome to the app, ", username)
+        print("Welcome to the app,", username)
         print("We have", len(TEXTS), "texts to be analyzed.")
         print("----------------------------------------")
         helper="Enter a number btw. 1 and "+str(len(TEXTS))+" to select: "
