@@ -5,6 +5,8 @@ author: Přemysl Harazin
 email: harazinpremysl@gmail.com
 """
 
+from sys import exit
+
 TEXTS = [
     '''Situated about 10 miles west of Kemmerer,
     Fossil Butte is a ruggedly impressive
@@ -33,136 +35,116 @@ TEXTS = [
     garpike and stingray are also present.'''
 ]
 
-USERLIST=["bob","ann","mike","liz"]
-USERPASSWORDS=["123","pass123","password123","pass123"]
+USERLIST = ["bob", "ann", "mike", "liz"]
+USERPASSWORDS = ["123", "pass123", "password123", "pass123"]
 
-from sys import exit
+username = input("username: ")
+password = input("password: ")
 
-username=input("username: ")
-password=input("password: ")
-
+# Kontrola, zda jmeno uzivatele z inputu je v listu zavedenych uzivatelu.
 if username in USERLIST:
-    userlist_id=USERLIST.index(username)
-    
-    if password==USERPASSWORDS[userlist_id]:
-        print("Welcome to the app, ",username)
-        print("We have ",len(TEXTS)," texts to be analyzed.")
-        print("Enter a number between 1 and ", len(TEXTS), "to select:" )
-        selected_text=input("")
-        if selected_text=="1" or selected_text=="2" or selected_text=="3":
-            selected_text=int(selected_text)-1
+    # Prideleni indexu k uvedenemu uzivateli a kontrola spravneho hesla.
+    userlist_id = USERLIST.index(username)
+    if password == USERPASSWORDS[userlist_id]:
+        print("----------------------------------------")
+        print("Welcome to the app, ", username)
+        print("We have", len(TEXTS), "texts to be analyzed.")
+        print("----------------------------------------")
+        helper="Enter a number btw. 1 and "+str(len(TEXTS))+" to select: "
+        selected_text = input(helper)
+        print("----------------------------------------")
+        # Kontrola zda input je cislo a zda odpovidajici text je v systemu. 
+        if selected_text.isdigit() and 1 <= int(selected_text) <= len(TEXTS):
+            selected_text = int(selected_text) - 1
         else:
             print("Wrong Input, terminating the program..")
-            exit()
-            
+            exit()            
     else:
         print("unregistered user, terminating the program..")
         exit()
-
 else:
     print("unregistered user, terminating the program..")
     exit()
 
-
-second_empty_list=TEXTS[selected_text].split()
+# Rozdeleni slov z celkoveho textu na jednotlive slova
+splitted_words = TEXTS[selected_text].split()
 
 # Odstraneni carky, tecky a noveho paragrafu z textu
-helper_list2=second_empty_list[:]
-second_empty_list=[]
-for xx in helper_list2:
-    second_empty_list.append(xx.removesuffix('\n'))
+cleaned_words = []
+for word in splitted_words:
+    a = word.removesuffix('\n')
+    b = a.removesuffix(',')
+    c = b.removesuffix('.')
+    cleaned_words.append(c)    
 
-helper_list2=second_empty_list[:]
-second_empty_list=[]
-for xx in helper_list2:
-    second_empty_list.append(xx.removesuffix(','))
-    
-helper_list2=second_empty_list[:]
-second_empty_list=[]
-for xx in helper_list2:
-    second_empty_list.append(xx.removesuffix('.'))    
-    
-    
-counter_capital_firstletters=0     
-counter_capital_allletters=0   
-counter_small_allletters=0
-counter_amount_of_numbers=0
-counter_sum_of_numbers=0
+# Boolean je podtypem integeru
+# Suma vsech slov s prvnim pismenem velkym 
+counter_capital_firstletters = sum(
+    counter_capital_firstletters2[0].istitle() 
+    for counter_capital_firstletters2 in cleaned_words
+    )
 
-for c in range(0,len(second_empty_list)):
-    # Hledani velkych prvnich pismen
-    if second_empty_list[c][0].istitle():
-        counter_capital_firstletters=counter_capital_firstletters+1
-    
-    # Hledani slov se samymi velkymi pismeny
-    if second_empty_list[c].isupper():
-        counter_capital_allletters=counter_capital_allletters+1
-    
-    # Hledani slov se samymi malymi pismeny
-    if second_empty_list[c].islower():
-        counter_small_allletters=counter_small_allletters+1
+# Suma vsech slov se vsemi velkymi pismeny 
+counter_capital_allletters = sum(
+    counter_capital_allletters2.isupper() 
+    for counter_capital_allletters2 in cleaned_words
+    )
 
-    # Hledani moznych cisel a jejich nasledny soucet
+# Suma vsech slov se vsemi malymi pismeny 
+counter_small_allletters = sum(
+    counter_small_allletters2.islower() 
+    for counter_small_allletters2 in cleaned_words
+    )
+
+# Pocet slov v textu ktere jsou cisla
+counter_amount_of_numbers = sum(
+    counter_amount_of_numbers2.isdigit() 
+    for counter_amount_of_numbers2 in cleaned_words
+    )
+
+# Suma vsech cisel v textu 
+counter_sum_of_numbers = sum(int(digit) 
+    for digit in cleaned_words if digit.isdigit()
+    )
+
+print("There are", len(cleaned_words), "words in the selected text.")        
+print("There are", counter_capital_firstletters, "titlecase words.")
+print("There are", counter_capital_allletters, "uppercase words.")
+print("There are", counter_small_allletters, "lowercase words.")
+print("There are", counter_amount_of_numbers, "numeric strings.")
+print("The sum of all the numbers", counter_sum_of_numbers)
+
+# Cyklus prochazi pres list, zjistuje delku kazdeho slova, 
+# kontroluje zda se jiz dana delka slova nachazi ve slovniku, 
+# pokud ano, prida o jedno vic, pokud jeste ve slovniku neni,prida do slovniku.
+
+counter = {}
+for word in cleaned_words:
+    n = len(word)
+    if n in counter:
+        counter[n] += 1
+    else:
+        counter[n] = 1
+
+print("----------------------------------------")
+print("LEN | Occurences | NR.")
+print("----------------------------------------")
+
+# Cyklus prochazi pres slovnik a zajistuje vypis jednotlivych hodnot
+# delka slova, cetnost vyskytu pomoci grafu a nakonec i ciselny vypis.
+
+end_line = max(counter.values()) + 5
+max_length_of_word = max(len(word) for word in cleaned_words)
+for k in range(1, max_length_of_word + 1):
     try:
-        float(second_empty_list[c])
-        counter_amount_of_numbers=counter_amount_of_numbers+1
-        counter_sum_of_numbers=counter_sum_of_numbers+int(second_empty_list[c])
-    except ValueError:
-        pass
-
-
-print("There is/are ",len(second_empty_list)," word(s) in the selected text.")        
-print("There is/are ",counter_capital_firstletters," titlecase word(s).")
-print("There is/are ",counter_capital_allletters," uppercase word(s).")
-print("There is/are ",counter_small_allletters," lowercase word(s).")
-print("There is/are ",counter_amount_of_numbers," numeric string(s).")
-print("The sum of all the numbers is ",counter_sum_of_numbers)
-
-
-# Vypocet cetnosti ruznych delek slov v textu
-max_length_of_string=max(len(x) for x in second_empty_list)
-vysledne_delky=[]
-
-for k in range(1,max_length_of_string+1):
-    counter=0
-    for each in second_empty_list:
-        if len(each)==k:
-            counter=counter+1
-    vysledne_delky.append(counter)
-
-print("------------------------------------------------------------")
-print("LEN | Occurences | Nr.")
-print("------------------------------------------------------------")
-
-for k in range(0,max_length_of_string):
-    print(f"{k+1:>4}|{'*'*vysledne_delky[k]:>0}|{vysledne_delky[k]:>1}") 
-    #striska/zobak znamena zarovnani, cislo znaci pocet odsazovacich znaku
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        indentation = end_line - counter.get(k)
+        # striska/zobak znamena zarovnani, 
+        # indentation znaci pocet odsazovacich znaku
+        print(f"{k:>4}|{'*'*counter.get(k):>0}"
+              f"{' ':>{indentation}}|{counter.get(k):>0}"
+              )
+        
+    except TypeError:
+        indentation = end_line
+        print(f"{k:>4}|{'*'*0:>0}{' ':>{indentation}}|{0:>0}")
 
